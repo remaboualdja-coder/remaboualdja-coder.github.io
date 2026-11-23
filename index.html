@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Fraise · Rema Boualdja</title>
+<meta name="description" content="Fraise, the portfolio of Rema Boualdja: final-year SOAS Management student. Equity research, financial modelling and valuation, including a live, interactive DCF of Puig Brands.">
+<meta name="theme-color" content="#0b0d17">
+<meta property="og:title" content="Fraise · Rema Boualdja">
+<meta property="og:description" content="Equity research and an interactive DCF model of Puig Brands, built by Rema Boualdja.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0d17'/%3E%3Ctext x='32' y='42' font-family='Arial,Helvetica,sans-serif' font-size='34' font-weight='700' text-anchor='middle' fill='%23f5b041'%3EF%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#0b0d17; --bg2:#0f1220; --panel:#131729; --panel2:#181d33; --line:#252b4a; --line2:#323a63;
+  --text:#e8eaf4; --muted:#9097b8; --dim:#646b8f;
+  --accent:#f5b041; --accent2:#ffcf7a; --blue:#6ea8fe; --pos:#3ddc97; --neg:#ff6b81;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  --r:14px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 var(--sans);overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:radial-gradient(900px 500px at 85% -10%,rgba(245,176,65,.09),transparent 60%),
+             radial-gradient(700px 500px at -10% 30%,rgba(110,168,254,.07),transparent 60%)}
+a{color:inherit}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+@media(max-width:600px){.wrap{padding:0 16px}}
+
+/* ---------- ticker ---------- */
+.ticker{border-bottom:1px solid var(--line);background:#080a12;overflow:hidden;white-space:nowrap;font:12px var(--mono);color:var(--muted);height:30px;display:flex;align-items:center}
+.ticker-track{display:inline-flex;gap:34px;padding-left:16px;animation:tick 60s linear infinite}
+.ticker-track span{flex-shrink:0}
+.ticker b{color:var(--text);font-weight:600}
+.up{color:var(--pos)} .dn{color:var(--neg)} .acc{color:var(--accent)}
+@keyframes tick{to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.ticker-track{animation:none}}
+
+/* ---------- header / nav ---------- */
+header{position:sticky;top:0;z-index:20;background:rgba(11,13,23,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:18px;height:62px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
+.mark{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font:700 14px var(--sans);color:#0b0d17;background:linear-gradient(135deg,var(--accent),#e8873a)}
+.brand-name{font-weight:700;letter-spacing:-.01em}
+.brand-sub{display:block;font:11px var(--mono);color:var(--dim);margin-top:-3px}
+nav{display:flex;gap:4px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav a{text-decoration:none;font:600 12px var(--mono);letter-spacing:.06em;color:var(--muted);padding:8px 12px;border-radius:8px;white-space:nowrap;transition:.15s}
+nav a:hover{color:var(--text);background:var(--panel)}
+nav a.on{color:var(--accent);background:rgba(245,176,65,.1)}
+@media(max-width:720px){.brand-sub{display:none}.bar{gap:10px}nav a{padding:8px 9px}}
+@media(max-width:480px){.brand-name{display:none}}
+
+/* ---------- generic ---------- */
+main{min-height:70vh}
+.view{display:none;padding:48px 0 72px;animation:fade .35s ease}
+.view.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.eyebrow{font:600 12px var(--mono);letter-spacing:.14em;color:var(--accent);text-transform:uppercase;margin:0 0 12px}
+h1{font-size:clamp(38px,7vw,68px);line-height:1.02;letter-spacing:-.035em;margin:0 0 18px;font-weight:800}
+h2{font-size:clamp(26px,4vw,36px);letter-spacing:-.025em;margin:0 0 8px;line-height:1.15}
+h3{font-size:16px;margin:0 0 8px;letter-spacing:-.01em}
+.lead{font-size:clamp(16px,2.2vw,19px);color:var(--muted);max-width:640px;margin:0 0 28px}
+.sub{color:var(--muted);margin:0 0 28px;max-width:720px}
+.panel{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:var(--r);padding:22px}
+.grid{display:grid;gap:16px}
+.grid>*,.model>*,.hero>*{min-width:0}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:900px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:1fr}}
+@media(max-width:700px){.g2{grid-template-columns:1fr}}
+@media(max-width:420px){.g4{grid-template-columns:1fr}}
+.section{margin-top:56px}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font:600 14px var(--sans);padding:11px 18px;border-radius:10px;border:1px solid var(--line2);background:var(--panel);color:var(--text);cursor:pointer;transition:.15s}
+.btn:hover{border-color:var(--accent);transform:translateY(-1px)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#14110a}
+.btn.primary:hover{background:var(--accent2)}
+.chip{display:inline-block;font:500 12.5px var(--sans);padding:5px 11px;border-radius:999px;border:1px solid var(--line2);color:var(--text);background:var(--bg2);margin:0 6px 8px 0}
+.tag{font:600 10.5px var(--mono);letter-spacing:.08em;padding:3px 8px;border-radius:6px;text-transform:uppercase}
+.tag.hold{background:rgba(245,176,65,.14);color:var(--accent)}
+.muted{color:var(--muted)} .dim{color:var(--dim)}
+.small{font-size:13px}
+
+/* ---------- hero ---------- */
+.hero{display:grid;grid-template-columns:1.25fr .9fr;gap:40px;align-items:center}
+@media(max-width:900px){.hero{grid-template-columns:minmax(0,1fr)}}
+.term{background:#080a12;border:1px solid var(--line2);border-radius:var(--r);overflow:hidden;box-shadow:0 30px 60px -30px rgba(0,0,0,.7)}
+.term-head{display:flex;align-items:center;gap:6px;padding:10px 14px;border-bottom:1px solid var(--line);font:11px var(--mono);color:var(--dim)}
+.dot{width:10px;height:10px;border-radius:50%;background:#2a3050}
+.dot:nth-child(1){background:#ff5f57}.dot:nth-child(2){background:#febc2e}.dot:nth-child(3){background:#28c840}
+.term-body{padding:18px;font:13px/1.75 var(--mono)}
+.term-row{display:flex;justify-content:space-between;gap:12px;border-bottom:1px dashed #1c2140;padding:3px 0}
+.term-row:last-child{border:0}
+.kpi{padding:18px}
+.kpi .v{font:600 clamp(22px,3vw,28px) var(--mono);letter-spacing:-.02em}
+.kpi .l{font-size:13px;color:var(--muted);margin-top:2px}
+
+/* ---------- research ---------- */
+.strip{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--panel)}
+.strip div{flex:1 1 120px;padding:14px 16px;border-right:1px solid var(--line)}
+.strip div:last-child{border-right:0}
+.strip .k{font:600 10.5px var(--mono);letter-spacing:.1em;color:var(--dim);text-transform:uppercase}
+.strip .v{font:600 18px var(--mono);margin-top:2px}
+.num{font:700 13px var(--mono);color:var(--accent);margin-bottom:8px;display:block}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:11px 12px;text-align:left;border-bottom:1px solid var(--line)}
+th{font:600 11px var(--mono);letter-spacing:.08em;color:var(--dim);text-transform:uppercase;white-space:nowrap}
+th.sort{cursor:pointer;user-select:none}
+th.sort:hover{color:var(--text)}
+td.n,th.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+tr.me td{background:rgba(245,176,65,.07)}
+tr.med td{color:var(--muted);font-style:italic}
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.bars .row{display:grid;grid-template-columns:150px 1fr 70px;gap:12px;align-items:center;margin:10px 0;font-size:14px}
+@media(max-width:520px){.bars .row{grid-template-columns:110px 1fr 58px;font-size:13px}}
+.track{height:10px;background:var(--bg2);border-radius:99px;overflow:hidden}
+.fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),#e8873a)}
+svg text{font-family:var(--mono)}
+.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:12.5px;color:var(--muted);margin-top:10px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+
+/* ---------- model ---------- */
+.model{display:grid;grid-template-columns:340px 1fr;gap:16px;align-items:start}
+@media(max-width:940px){.model{grid-template-columns:minmax(0,1fr)}}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:3px;margin-bottom:18px}
+.seg button{font:600 12px var(--mono);letter-spacing:.06em;padding:9px 0;border:0;border-radius:8px;background:none;color:var(--muted);cursor:pointer}
+.seg button.on{background:var(--panel2);color:var(--accent);box-shadow:0 0 0 1px var(--line2)}
+.ctl{margin-bottom:16px}
+.ctl label{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:6px}
+.ctl label output{font:600 13px var(--mono);color:var(--text)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:99px;background:var(--line2);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);border:3px solid var(--bg);box-shadow:0 0 0 1px var(--accent);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--accent);border:3px solid var(--bg);cursor:pointer}
+input[type=range]:focus-visible{box-shadow:0 0 0 3px rgba(245,176,65,.35)}
+.out-big{font:700 clamp(40px,6vw,56px)/1 var(--mono);letter-spacing:-.03em}
+.out-row{display:flex;flex-wrap:wrap;gap:22px;align-items:flex-end;margin-bottom:18px}
+.pill{font:600 13px var(--mono);padding:5px 10px;border-radius:8px}
+.pill.up{background:rgba(61,220,151,.12)} .pill.dn{background:rgba(255,107,129,.12)}
+.sens td{text-align:center;font:500 12.5px var(--mono);padding:8px 4px;border:1px solid var(--bg)}
+.sens th{text-align:center;padding:8px 4px;border:0}
+.sens td.cur{outline:2px solid var(--accent);outline-offset:-2px;font-weight:700}
+.note{font-size:12.5px;color:var(--dim);line-height:1.55}
+
+/* ---------- experience ---------- */
+.tl{position:relative;padding-left:26px}
+.tl::before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:2px;background:linear-gradient(var(--accent),var(--line))}
+.tl-item{position:relative;margin-bottom:18px}
+.tl-item::before{content:"";position:absolute;left:-25px;top:24px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--accent)}
+.tl-top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 12px;margin-bottom:6px}
+.tl-top .when{font:500 12.5px var(--mono);color:var(--dim)}
+.tl-item ul{margin:8px 0 0;padding-left:18px;color:var(--muted)}
+.tl-item li{margin:3px 0}
+
+/* ---------- contact ---------- */
+.contact{text-align:center;max-width:680px;margin:0 auto}
+.email{font:600 clamp(20px,4.4vw,34px) var(--mono);color:var(--accent);text-decoration:none;word-break:break-all}
+.email:hover{text-decoration:underline}
+footer{border-top:1px solid var(--line);padding:28px 0;color:var(--dim);font-size:12.5px}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker"></div></div>
+
+<header>
+  <div class="wrap bar">
+    <a class="brand" href="#/about" aria-label="Fraise, home">
+      <span class="mark">F</span>
+      <span><span class="brand-name">Fraise</span><span class="brand-sub">by Rema Boualdja</span></span>
+    </a>
+    <nav id="nav" aria-label="Sections">
+      <a href="#/about">ABOUT</a>
+      <a href="#/research">RESEARCH</a>
+      <a href="#/model">LIVE DCF</a>
+      <a href="#/experience">EXPERIENCE</a>
+      <a href="#/contact">CONTACT</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- =============================== ABOUT =============================== -->
+<section class="view" id="about">
+  <div class="hero">
+    <div>
+      <p class="eyebrow">Final-year BSc Management · SOAS University of London</p>
+      <h1>Rema<br>Boualdja</h1>
+      <p class="lead">I turn numbers into decisions. I build the model, form a clear view, and explain it in plain English.</p>
+      <div class="btns">
+        <a class="btn primary" href="#/model">Try my live DCF &rarr;</a>
+        <a class="btn" href="#/research">Read the Puig research</a>
+        <a class="btn" href="https://www.linkedin.com/in/rema-boualdja-615a4344b/" target="_blank" rel="noopener">LinkedIn &nearr;</a>
+      </div>
+    </div>
+    <div class="term" aria-label="Puig Brands valuation summary">
+      <div class="term-head"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span style="margin-left:8px">puig_valuation.xlsx</span></div>
+      <div class="term-body">
+        <div class="term-row"><span class="dim">TICKER</span><span>PUIG · BME</span></div>
+        <div class="term-row"><span class="dim">RATING</span><span class="acc">HOLD</span></div>
+        <div class="term-row"><span class="dim">PRICE</span><span>€20.36</span></div>
+        <div class="term-row"><span class="dim">DCF TARGET</span><span>€21.75</span></div>
+        <div class="term-row"><span class="dim">UPSIDE</span><span class="up">+6.8%</span></div>
+        <div class="term-row"><span class="dim">BEAR / BULL</span><span><span id="tBear"></span> / <span id="tBull"></span></span></div>
+        <div class="term-row"><span class="dim">WACC · g</span><span>8.0% · 2.5%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid g4 section">
+    <div class="panel kpi"><div class="v">€21.75</div><div class="l">Puig DCF target, 3 scenarios</div></div>
+    <div class="panel kpi"><div class="v">£1.5m</div><div class="l">HS2 project budgets cost-tracked</div></div>
+    <div class="panel kpi"><div class="v">First</div><div class="l">Corporate Finance &amp; Financial Statements</div></div>
+    <div class="panel kpi"><div class="v">82%</div><div class="l">Fenty Beauty strategy portfolio</div></div>
+  </div>
+
+  <div class="grid g2 section">
+    <div class="panel">
+      <p class="eyebrow">About me</p>
+      <p>I'm a final-year BSc Management student at SOAS University of London.</p>
+      <p>I enjoy turning numbers into decisions. I recently built a three-scenario DCF and comparables model on Puig Brands, concluding with a HOLD rating and a €21.75 target price, and wrote it up as a two-page investment memo.</p>
+      <p>My finance experience includes cost tracking on UK infrastructure projects, including HS2, at Fourway Communication.</p>
+      <p style="margin-bottom:0">I'm interested in investing, corporate finance and the consumer and luxury sector, and I'm open to graduate roles and internships in finance.</p>
+    </div>
+    <div class="grid" style="gap:16px">
+      <div class="panel">
+        <p class="eyebrow">Education</p>
+        <h3>BSc Management · SOAS University of London</h3>
+        <p class="muted small" style="margin:0 0 8px">Sep 2024 – Jun 2027 · Expected 2:1</p>
+        <p class="small" style="margin:0">First-class marks in Corporate Finance and Analysing Company Financial Statements. Dissertation on how TikTok "dupe" content affects luxury beauty brands.</p>
+      </div>
+      <div class="panel">
+        <p class="eyebrow">Toolkit</p>
+        <div>
+          <span class="chip">DCF &amp; scenario analysis</span><span class="chip">Trading comps</span><span class="chip">Financial statement analysis</span><span class="chip">Budgeting &amp; cost control</span><span class="chip">Excel</span><span class="chip">PowerPoint</span><span class="chip">Bloomberg (BMC certified)</span>
+        </div>
+        <p class="small muted" style="margin:6px 0 0"><b style="color:var(--text)">Languages:</b> Arabic (fluent) · French (working proficiency)</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================== RESEARCH =============================== -->
+<section class="view" id="research">
+  <p class="eyebrow">Equity research · 13 November 2026</p>
+  <h2>Puig Brands: strong business, fair price</h2>
+  <p class="sub">The owner of Carolina Herrera, Rabanne, Jean Paul Gaultier, Byredo and Charlotte Tilbury. My view: a good company whose shares already reflect most of the good news, with "dupes" as the risk the market underrates.</p>
+
+  <div class="strip">
+    <div><div class="k">Rating</div><div class="v acc">HOLD</div></div>
+    <div><div class="k">Price</div><div class="v">€20.36</div></div>
+    <div><div class="k">Target</div><div class="v">€21.75</div></div>
+    <div><div class="k">Upside</div><div class="v up">+6.8%</div></div>
+    <div><div class="k">Market cap</div><div class="v">€11.5bn</div></div>
+    <div><div class="k">EV / EBITDA</div><div class="v">11.8x</div></div>
+  </div>
+
+  <div class="btns" style="margin-top:16px">
+    <a class="btn" href="https://drive.google.com/file/d/1XpIiYUaiI9jNXjnSmrcEww1Hmr9zsPXM/view?usp=sharing" target="_blank" rel="noopener">Read the full memo (PDF) &nearr;</a>
+    <a class="btn" href="https://docs.google.com/spreadsheets/d/1E9ley334X8PLMGVPQoAr_MdThUIhFCwK/edit?usp=sharing" target="_blank" rel="noopener">Open the Excel model &nearr;</a>
+    <a class="btn primary" href="#/model">Change the assumptions yourself &rarr;</a>
+  </div>
+
+  <div class="grid g3 section">
+    <div class="panel"><span class="num">01</span><h3>Strong business, fair price</h3><p class="muted small" style="margin:0">Shares are up 34% in a year and already sit at the consensus target (c. €20). My base-case DCF gives €21.75: only 7% upside.</p></div>
+    <div class="panel"><span class="num">02</span><h3>Dupes are the underrated risk</h3><p class="muted small" style="margin:0">Fragrance is 72% of revenue, and its growth slowed from +6.4% to +3.8% while US mass fragrance, driven by dupes, grew almost three times faster than prestige.</p></div>
+    <div class="panel"><span class="num">03</span><h3>Upside needs Vision 2032</h3><p class="muted small" style="margin:0">If management fully delivers its 2032 plan, the shares are worth about €24. If dupes keep squeezing prestige, about €17.50. That range doesn't justify a BUY today.</p></div>
+  </div>
+
+  <div class="grid g2 section">
+    <div class="panel">
+      <p class="eyebrow">Valuation range (€ per share)</p>
+      <div id="football"></div>
+      <div class="legend"><span><i style="background:var(--accent)"></i>DCF bear → bull</span><span><i style="background:var(--blue)"></i>Trading comps range</span><span><i style="background:var(--text);width:2px"></i>Current price €20.36</span></div>
+    </div>
+    <div class="panel">
+      <p class="eyebrow">FY2025 revenue mix · like-for-like growth</p>
+      <div class="bars" id="mix"></div>
+      <p class="note" style="margin:14px 0 0">FY2025 revenue €5.04bn (+7.8% LFL), 20.7% adjusted EBITDA margin. Growth is shifting towards makeup, niche fragrance and Asia-Pacific (+21.7%).</p>
+    </div>
+  </div>
+
+  <div class="panel section">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:baseline">
+      <p class="eyebrow" style="margin:0">Trading comparables</p><span class="note">Click a column to sort · implied price applies each peer's EV/EBITDA to Puig</span>
+    </div>
+    <div class="tablewrap" style="margin-top:10px">
+      <table id="comps"><thead><tr>
+        <th class="sort" data-k="name">Company</th>
+        <th class="sort n" data-k="ev">EV/EBITDA</th>
+        <th class="sort n" data-k="pe">P/E (fwd)</th>
+        <th class="sort n" data-k="imp">Implied Puig price</th>
+        <th>Why it's comparable</th>
+      </tr></thead><tbody></tbody></table>
+    </div>
+    <p class="note" style="margin:12px 0 0">Part of Puig's discount is fair: family control (A/B shares), a small free float and a short listing history (IPO May 2024).</p>
+  </div>
+
+  <div class="grid g2 section">
+    <div class="panel"><p class="eyebrow">What would make me upgrade to BUY</p>
+      <ul class="muted small" style="margin:0;padding-left:18px"><li>Fragrance growth re-accelerating above 6%</li><li>Renewed takeover interest. Puig and Estée Lauder both said they hadn't ruled out future deals</li></ul></div>
+    <div class="panel"><p class="eyebrow">What would make me downgrade to SELL</p>
+      <ul class="muted small" style="margin:0;padding-left:18px"><li>Prestige fragrance growth below 3%</li><li>A disappointing ISDIN integration (€900m cash + €300m deferred)</li><li>Travel retail weakening again</li></ul></div>
+  </div>
+  <p class="note" style="margin-top:20px">Sources: Puig FY2025 annual accounts, H1 2026 results, Q3 2026 sales update, Capital Markets Day "Vision 2032" (Oct 2026); Circana; market data from stockanalysis.com (13 Nov 2026). Student research, not investment advice.</p>
+</section>
+
+<!-- =============================== MODEL =============================== -->
+<section class="view" id="model">
+  <p class="eyebrow">Interactive model</p>
+  <h2>Live DCF: Puig Brands</h2>
+  <p class="sub">This is my Excel model rebuilt to run in your browser. Change any assumption and the valuation, cash flows and sensitivity table update instantly. The base case reproduces my spreadsheet's €21.75 exactly.</p>
+
+  <div class="model">
+    <div class="panel">
+      <div class="seg" role="group" aria-label="Scenario">
+        <button data-s="bear">BEAR</button><button data-s="base" class="on">BASE</button><button data-s="bull">BULL</button>
+      </div>
+      <div id="controls"></div>
+      <button class="btn" id="reset" style="width:100%;justify-content:center">Reset to my base case</button>
+      <p class="note" style="margin:16px 0 0"><b style="color:var(--muted)">Bear:</b> dupes and mass brands keep squeezing prestige fragrance. <b style="color:var(--muted)">Bull:</b> Puig delivers its Vision 2032 targets (€8bn+ revenue).</p>
+    </div>
+
+    <div class="grid" style="gap:16px">
+      <div class="panel">
+        <div class="out-row">
+          <div><div class="dim small mono">VALUE PER SHARE</div><div class="out-big" id="oPrice">€21.75</div></div>
+          <div><span class="pill" id="oUp"></span><div class="dim small mono" style="margin-top:6px">vs €20.36 share price</div></div>
+          <div style="margin-left:auto;text-align:right"><div class="dim small mono">IMPLIED RATING</div><div class="mono" style="font-size:22px;font-weight:700" id="oRating"></div></div>
+        </div>
+        <div class="grid g4" style="gap:10px">
+          <div><div class="dim small mono">ENTERPRISE VALUE</div><div class="mono" id="oEV"></div></div>
+          <div><div class="dim small mono">EQUITY VALUE</div><div class="mono" id="oEq"></div></div>
+          <div><div class="dim small mono">TV % OF EV</div><div class="mono" id="oTV"></div></div>
+          <div><div class="dim small mono">2032E REVENUE</div><div class="mono" id="oRev"></div></div>
+        </div>
+      </div>
+
+      <div class="grid g2" style="gap:16px">
+        <div class="panel"><p class="eyebrow">Unlevered free cash flow (€m)</p><div id="fcfChart"></div>
+          <div class="legend"><span><i style="background:var(--accent)"></i>FCF</span><span><i style="background:var(--line2)"></i>Present value</span></div></div>
+        <div class="panel"><p class="eyebrow">Enterprise → equity bridge (€m)</p><div id="bridge"></div></div>
+      </div>
+
+      <div class="panel">
+        <p class="eyebrow">Projections (€m)</p>
+        <div class="tablewrap"><table id="proj"></table></div>
+      </div>
+
+      <div class="panel">
+        <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:baseline">
+          <p class="eyebrow" style="margin:0">Sensitivity: value per share (€)</p><span class="note">Rows: WACC · Columns: terminal growth · Green above, red below today's price</span>
+        </div>
+        <div class="tablewrap" style="margin-top:10px"><table class="sens" id="sens"></table></div>
+      </div>
+
+      <p class="note" style="margin:0"><b style="color:var(--muted)">Method and simplifications.</b> Valuation date end-2026, so 2027–32 cash flows are discounted. Unlevered FCF = adjusted EBITDA × cash conversion, used instead of building tax, capex and working capital line by line. The margin moves in a straight line from 20.7% (2025) to the 2032 target. Terminal value uses Gordon growth. Net debt €1,590m (H1 2026); 563.29m shares. The ISDIN acquisition is excluded and treated as roughly value-neutral.</p>
+    </div>
+  </div>
+</section>
+
+<!-- =============================== EXPERIENCE =============================== -->
+<section class="view" id="experience">
+  <p class="eyebrow">Experience &amp; projects</p>
+  <h2>Where I've worked</h2>
+  <p class="sub">Finance roles alongside my degree, plus the projects I'm proudest of.</p>
+
+  <div class="tl">
+    <div class="tl-item panel">
+      <div class="tl-top"><h3 style="margin:0">Finance &amp; Payroll Support · Treehouse Dental</h3><span class="when">Feb 2026 – Sep 2026</span></div>
+      <ul><li>Supported staff payroll alongside the practice accountant</li><li>Processed patient payments and refunds, ensuring accurate records</li><li>Checked payment and payroll records for discrepancies before sign-off</li></ul>
+    </div>
+    <div class="tl-item panel">
+      <div class="tl-top"><h3 style="margin:0">Sales Associate · Sign of the Times (luxury resale)</h3><span class="when">Jul 2025 – Dec 2025</span></div>
+      <ul><li>Advised clients on pre-owned luxury goods</li></ul>
+    </div>
+    <div class="tl-item panel">
+      <div class="tl-top"><h3 style="margin:0">Finance Work Experience · Fourway Communication Ltd</h3><span class="when">2025</span></div>
+      <ul><li>Tracked costs against budget on UK infrastructure projects, including an HS2 project (budgets up to £1.5m)</li><li>Calculated, updated and monitored project costs in Excel for project reporting</li></ul>
+    </div>
+    <div class="tl-item panel">
+      <div class="tl-top"><h3 style="margin:0">Summer Intern, Finance, Risk &amp; Operations · Commonwealth Bank of Australia, London</h3><span class="when">Summer 2024</span></div>
+      <ul><li>Gained exposure to finance, risk and operations functions in the London branch of a major international bank</li><li>Developed an understanding of banking controls, regulation and risk management</li></ul>
+    </div>
+    <div class="tl-item panel">
+      <div class="tl-top"><h3 style="margin:0">FAIRE Programme Participant · Browne Jacobson LLP</h3><span class="when">2024</span></div>
+      <ul><li>Selected for Browne Jacobson's FAIRE work experience programme at a leading UK law firm</li></ul>
+    </div>
+  </div>
+
+  <h2 class="section" style="font-size:26px">Projects</h2>
+  <div class="grid g2" style="margin-top:16px">
+    <a class="panel" href="#/research" style="text-decoration:none"><span class="tag hold">Equity research</span><h3 style="margin-top:12px">Puig Brands: HOLD, €21.75 target</h3><p class="muted small" style="margin:0">Three-scenario DCF and trading comps in Excel, a two-page investment memo, and the live model on this site. &rarr;</p></a>
+    <a class="panel" href="https://drive.google.com/file/d/1MgGa5dfx1X4NUFhBoVSZI7VCp4zREBwu/view?usp=sharing" target="_blank" rel="noopener" style="text-decoration:none"><span class="tag" style="background:rgba(110,168,254,.14);color:var(--blue)">Strategy · 82% (First)</span><h3 style="margin-top:12px">Fenty Beauty marketing portfolio</h3><p class="muted small" style="margin:0">Individual analysis of brand positioning and growth strategy for a high-growth consumer brand. &nearr;</p></a>
+    <div class="panel"><span class="tag" style="background:rgba(61,220,151,.12);color:var(--pos)">In progress</span><h3 style="margin-top:12px">Dissertation: TikTok "dupes" and luxury beauty</h3><p class="muted small" style="margin:0">Survey-based research into how dupe content affects luxury beauty brands. It's the idea behind my Puig thesis.</p></div>
+    <div class="panel"><span class="tag" style="background:rgba(144,151,184,.14);color:var(--muted)">Coursework</span><h3 style="margin-top:12px">Egypt labour-market policy briefing</h3><p class="muted small" style="margin:0">Co-authoring a policy briefing for a regional economic summit.</p></div>
+  </div>
+</section>
+
+<!-- =============================== CONTACT =============================== -->
+<section class="view" id="contact">
+  <div class="contact">
+    <p class="eyebrow">Contact</p>
+    <h2>Let's talk</h2>
+    <p class="sub" style="margin:0 auto 28px">I'm looking for graduate roles and internships in finance. I'd love to hear about opportunities, or just get advice from people in the industry.</p>
+    <a class="email" href="mailto:boualdjarema@gmail.com">boualdjarema@gmail.com</a>
+    <div class="btns" style="justify-content:center;margin-top:28px">
+      <a class="btn primary" href="mailto:boualdjarema@gmail.com">Email me</a>
+      <a class="btn" id="linkedin" href="#" target="_blank" rel="noopener" hidden>LinkedIn &nearr;</a>
+    </div>
+    <p class="note" style="margin-top:28px">Based in London · Arabic (fluent) · French (working proficiency)</p>
+  </div>
+</section>
+
+</main>
+
+<footer><div class="wrap"><span>Fraise · © <span id="yr"></span> Rema Boualdja</span><span>Built with HTML, CSS &amp; JavaScript · hosted on GitHub Pages · market data as of 13 Nov 2026</span></div></footer>
+
+<script>
+(function(){
+"use strict";
+/* ---- Settings ---- */
+var LINKEDIN_URL = "https://www.linkedin.com/in/rema-boualdja-615a4344b/"; // paste your LinkedIn URL here, e.g. "https://www.linkedin.com/in/remaboualdja"
+
+/* ---- Data (from Puig_DCF_model.xlsx, 13 Nov 2026) ---- */
+var D = { rev0:5042, m0:0.207, netDebt:1590, shares:563.29, price:20.36, ttmEbitda:13070/11.77 };
+var SCEN = {
+  bear:{g26:.05,g:.035,m:.20, conv:.55,w:.08,tg:.025},
+  base:{g26:.05,g:.055,m:.22, conv:.55,w:.08,tg:.025},
+  bull:{g26:.05,g:.07, m:.225,conv:.55,w:.08,tg:.025}
+};
+var CTL = [
+  {k:"g26", label:"Revenue growth 2026E", min:0,   max:.10, step:.005},
+  {k:"g",   label:"Revenue growth 2027–32 (p.a.)", min:0, max:.10, step:.005},
+  {k:"m",   label:"Adj. EBITDA margin by 2032", min:.16, max:.26, step:.0025},
+  {k:"conv",label:"FCF conversion (FCF / EBITDA)", min:.40, max:.70, step:.01},
+  {k:"w",   label:"WACC", min:.06, max:.11, step:.0025},
+  {k:"tg",  label:"Terminal growth", min:.01, max:.035, step:.0025}
+];
+var COMPS = [
+  {name:"Puig",         ev:11.77, pe:17.65, why:"Target", me:true},
+  {name:"L'Oréal",      ev:23.14, pe:30.01, why:"Global premium beauty leader; quality benchmark"},
+  {name:"Estée Lauder", ev:17.71, pe:31.20, why:"Prestige beauty; merger talks with Puig ended May 2026"},
+  {name:"Interparfums", ev:14.22, pe:26.04, why:"Pure fragrance licensor; closest business model"},
+  {name:"Coty",         ev:8.15,  pe:12.95, why:"Prestige + mass fragrance; highly indebted, shrinking"}
+];
+var MIX = [
+  {k:"Fragrance & Fashion", v:72, g:"+6.4%"},
+  {k:"Makeup", v:17, g:"+13.7%"},
+  {k:"Skincare", v:11, g:"+8.9%"}
+];
+
+/* ---- Helpers ---- */
+function $(s,c){return (c||document).querySelector(s)}
+function $$(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))}
+function pct(x,d){return (x*100).toFixed(d==null?1:d)+"%"}
+function eur(x){return "€"+x.toFixed(2)}
+function mn(x){return Math.round(x).toLocaleString("en-GB")}
+function impliedPrice(mult){return (D.ttmEbitda*mult - D.netDebt)/D.shares}
+
+/* ---- DCF (mirrors the spreadsheet formula by formula) ---- */
+function dcf(a){
+  var rows=[], rev=D.rev0, sumPV=0, f=0;
+  rows.push({y:"2025A", rev:rev, g:null, m:D.m0, e:rev*D.m0});
+  for(var i=1;i<=7;i++){
+    var g = i===1 ? a.g26 : a.g;
+    rev *= (1+g);
+    var m = D.m0 + (a.m - D.m0)*i/7;
+    var e = rev*m; f = e*a.conv;
+    var r = {y:(2025+i)+"E", rev:rev, g:g, m:m, e:e, f:f};
+    if(i>=2){ r.df = 1/Math.pow(1+a.w,i-1); r.pv = f*r.df; sumPV += r.pv; }
+    rows.push(r);
+  }
+  var tv = a.w>a.tg ? f*(1+a.tg)/(a.w-a.tg) : NaN;
+  var pvtv = tv/Math.pow(1+a.w,6);
+  var ev = sumPV+pvtv, eq = ev-D.netDebt, ps = eq/D.shares;
+  return {rows:rows, sumPV:sumPV, tv:tv, pvtv:pvtv, ev:ev, eq:eq, ps:ps, up:ps/D.price-1, tvShare:pvtv/ev};
+}
+
+/* ---- Ticker ---- */
+(function(){
+  var b=dcf(SCEN.base), items=[
+    "<b>PUIG</b> €20.36 <span class='acc'>HOLD</span>",
+    "<b>DCF TARGET</b> "+eur(b.ps)+" <span class='up'>▲ "+pct(b.up)+"</span>",
+    "<b>BEAR</b> "+eur(dcf(SCEN.bear).ps), "<b>BULL</b> "+eur(dcf(SCEN.bull).ps),
+    "<b>L'ORÉAL</b> 23.1x EV/EBITDA","<b>ESTÉE LAUDER</b> 17.7x","<b>INTERPARFUMS</b> 14.2x","<b>COTY</b> 8.2x",
+    "<b>WACC</b> 8.0%","<b>TERMINAL g</b> 2.5%","<span class='dim'>MARKET DATA AS OF 13 NOV 2026</span>"
+  ];
+  var html=items.map(function(t){return "<span>"+t+"</span>"}).join("");
+  $("#ticker").innerHTML=html+html;
+  $("#tBear").textContent=eur(dcf(SCEN.bear).ps);
+  $("#tBull").textContent=eur(dcf(SCEN.bull).ps);
+})();
+
+/* ---- Research: revenue mix ---- */
+$("#mix").innerHTML = MIX.map(function(x){
+  return '<div class="row"><span>'+x.k+'</span><div class="track"><div class="fill" style="width:'+x.v+'%"></div></div><span class="mono" style="text-align:right">'+x.v+'% <span class="up" style="font-size:11px;display:block">'+x.g+'</span></span></div>';
+}).join("");
+
+/* ---- Research: football field ---- */
+(function(){
+  var lo=10, hi=32, W=520, H=170, L=118, R=14, x=function(v){return L+(v-lo)/(hi-lo)*(W-L-R)};
+  var bear=dcf(SCEN.bear).ps, base=dcf(SCEN.base).ps, bull=dcf(SCEN.bull).ps;
+  var med=impliedPrice(15.965), coty=impliedPrice(8.15), ipar=impliedPrice(14.22);
+  var bars=[
+    {lab:"DCF scenarios", a:bear, b:bull, mid:base, c:"var(--accent)", note:eur(base)+" base"},
+    {lab:"Trading comps", a:coty, b:med, mid:ipar, c:"var(--blue)", note:eur(ipar)+" at Interparfums"}
+  ];
+  var s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="img" aria-label="Valuation range chart: DCF '+eur(bear)+' to '+eur(bull)+', comps '+eur(coty)+' to '+eur(med)+', price €20.36">';
+  for(var t=lo;t<=hi;t+=4){ s+='<line x1="'+x(t)+'" x2="'+x(t)+'" y1="14" y2="'+(H-26)+'" stroke="#1d2240"/><text x="'+x(t)+'" y="'+(H-8)+'" fill="#646b8f" font-size="11" text-anchor="middle">€'+t+'</text>'; }
+  bars.forEach(function(bb,i){
+    var y=30+i*56;
+    s+='<text x="0" y="'+(y+15)+'" fill="#9097b8" font-size="11.5">'+bb.lab+'</text>';
+    s+='<rect x="'+x(bb.a)+'" y="'+y+'" width="'+(x(bb.b)-x(bb.a))+'" height="22" rx="5" fill="'+bb.c+'" opacity=".85"/>';
+    s+='<line x1="'+x(bb.mid)+'" x2="'+x(bb.mid)+'" y1="'+(y-3)+'" y2="'+(y+25)+'" stroke="#0b0d17" stroke-width="2.5"/>';
+    s+='<text x="'+(x(bb.a)-5)+'" y="'+(y+15)+'" fill="#e8eaf4" font-size="11" text-anchor="end">'+bb.a.toFixed(2)+'</text>';
+    s+='<text x="'+(x(bb.b)+5)+'" y="'+(y+15)+'" fill="#e8eaf4" font-size="11">'+bb.b.toFixed(2)+'</text>';
+    s+='<text x="'+x(bb.b)+'" y="'+(y+38)+'" fill="#646b8f" font-size="10.5" text-anchor="end">'+bb.note+'</text>';
+  });
+  s+='<line x1="'+x(D.price)+'" x2="'+x(D.price)+'" y1="10" y2="'+(H-26)+'" stroke="#e8eaf4" stroke-width="1.5" stroke-dasharray="4 3"/>';
+  s+='<text x="'+(x(D.price)+4)+'" y="12" fill="#e8eaf4" font-size="10.5">€20.36</text></svg>';
+  $("#football").innerHTML=s;
+})();
+
+/* ---- Research: sortable comps ---- */
+(function(){
+  var data=COMPS.map(function(c){return Object.assign({imp:impliedPrice(c.ev)},c)});
+  var key="ev", dir=-1;
+  function median(a){a=a.slice().sort(function(p,q){return p-q});var n=a.length;return n%2?a[(n-1)/2]:(a[n/2-1]+a[n/2])/2}
+  var peers=data.filter(function(d){return !d.me});
+  var mEV=median(peers.map(function(d){return d.ev})), mPE=median(peers.map(function(d){return d.pe}));
+  function render(){
+    var rows=data.slice().sort(function(a,b){var p=a[key],q=b[key];return (typeof p==="string"?p.localeCompare(q):p-q)*dir});
+    var h=rows.map(function(d){
+      var cls=d.imp>=D.price?"up":"dn";
+      return '<tr class="'+(d.me?"me":"")+'"><td><b>'+d.name+'</b></td><td class="n">'+d.ev.toFixed(1)+'x</td><td class="n">'+d.pe.toFixed(1)+'x</td><td class="n '+(d.me?"":cls)+'">'+eur(d.imp)+'</td><td class="muted small">'+d.why+'</td></tr>';
+    }).join("");
+    h+='<tr class="med"><td>Peer median</td><td class="n">'+mEV.toFixed(1)+'x</td><td class="n">'+mPE.toFixed(1)+'x</td><td class="n">'+eur(impliedPrice(mEV))+'</td><td class="small">Excluding Puig</td></tr>';
+    $("#comps tbody").innerHTML=h;
+    $$("#comps th.sort").forEach(function(th){th.setAttribute("aria-sort",th.dataset.k===key?(dir>0?"ascending":"descending"):"none");th.textContent=th.textContent.replace(/ [▲▼]$/,"")+(th.dataset.k===key?(dir>0?" ▲":" ▼"):"")});
+  }
+  $$("#comps th.sort").forEach(function(th){th.addEventListener("click",function(){var k=th.dataset.k;dir=(k===key)?-dir:(k==="name"?1:-1);key=k;render();})});
+  render();
+})();
+
+/* ---- Model ---- */
+var state=Object.assign({},SCEN.base);
+$("#controls").innerHTML=CTL.map(function(c){
+  return '<div class="ctl"><label for="c_'+c.k+'"><span>'+c.label+'</span><output id="o_'+c.k+'"></output></label><input type="range" id="c_'+c.k+'" min="'+c.min+'" max="'+c.max+'" step="'+c.step+'"></div>';
+}).join("");
+function syncControls(){
+  CTL.forEach(function(c){ $("#c_"+c.k).value=state[c.k]; $("#o_"+c.k).textContent=pct(state[c.k],(c.k==="m"||c.k==="w"||c.k==="tg")?2:1); });
+}
+function matchScenario(){
+  var hit=null;
+  Object.keys(SCEN).forEach(function(s){ if(CTL.every(function(c){return Math.abs(SCEN[s][c.k]-state[c.k])<1e-9})) hit=s; });
+  $$(".seg button").forEach(function(b){b.classList.toggle("on",b.dataset.s===hit)});
+}
+function bar(vals,pvs,labels){
+  var W=320,H=170,P=24,max=Math.max.apply(null,vals)*1.12,n=vals.length,bw=(W-P)/n;
+  var s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="img" aria-label="Free cash flow by year">';
+  vals.forEach(function(v,i){
+    var h=(v/max)*(H-40), x=P+i*bw+bw*.14, w=bw*.72;
+    s+='<rect x="'+x+'" y="'+(H-22-h)+'" width="'+w+'" height="'+h+'" rx="3" fill="#f5b041"/>';
+    if(pvs[i]!=null){var hp=(pvs[i]/max)*(H-40); s+='<rect x="'+(x+w*.22)+'" y="'+(H-22-hp)+'" width="'+(w*.56)+'" height="'+hp+'" rx="2" fill="#323a63" opacity=".9"/>';}
+    s+='<text x="'+(x+w/2)+'" y="'+(H-24-h-4)+'" fill="#9097b8" font-size="9.5" text-anchor="middle">'+mn(v)+'</text>';
+    s+='<text x="'+(x+w/2)+'" y="'+(H-7)+'" fill="#646b8f" font-size="9.5" text-anchor="middle">'+labels[i]+'</text>';
+  });
+  return s+'</svg>';
+}
+function bridge(r){
+  var items=[{k:"PV of FCF 2027–32",v:r.sumPV,c:"#f5b041"},{k:"PV of terminal value",v:r.pvtv,c:"#ffcf7a"},{k:"Less net debt",v:-D.netDebt,c:"#ff6b81"},{k:"Equity value",v:r.eq,c:"#3ddc97",tot:true}];
+  var max=r.ev*1.05;
+  return items.map(function(it){
+    return '<div class="row" style="display:grid;grid-template-columns:1fr 84px;gap:10px;margin:12px 0"><div><div class="small muted" style="margin-bottom:4px">'+it.k+'</div><div class="track" style="height:12px"><div class="fill" style="width:'+Math.max(2,Math.abs(it.v)/max*100)+'%;background:'+it.c+'"></div></div></div><div class="mono" style="text-align:right;align-self:end;'+(it.tot?"font-weight:700":"")+'">'+(it.v<0?"(":"")+mn(Math.abs(it.v))+(it.v<0?")":"")+'</div></div>';
+  }).join("")+'<p class="note" style="margin:6px 0 0">÷ 563.29m shares = <b class="mono" style="color:var(--text)">'+eur(r.ps)+'</b> per share</p>';
+}
+function render(){
+  var r=dcf(state), ok=isFinite(r.ps);
+  syncControls(); matchScenario();
+  $("#oPrice").textContent= ok?eur(r.ps):"n/a";
+  var up=$("#oUp"); up.textContent= ok?((r.up>=0?"▲ +":"▼ ")+pct(r.up)):"WACC must exceed g"; up.className="pill "+(r.up>=0?"up":"dn");
+  var rating= r.up>0.15?"BUY":(r.up<-0.10?"SELL":"HOLD");
+  var ro=$("#oRating"); ro.textContent=ok?rating:"n/a"; ro.style.color= rating==="BUY"?"var(--pos)":rating==="SELL"?"var(--neg)":"var(--accent)";
+  $("#oEV").textContent="€"+mn(r.ev)+"m"; $("#oEq").textContent="€"+mn(r.eq)+"m"; $("#oTV").textContent=pct(r.tvShare); $("#oRev").textContent="€"+mn(r.rows[7].rev)+"m";
+  var fr=r.rows.slice(1);
+  $("#fcfChart").innerHTML=bar(fr.map(function(x){return x.f}),fr.map(function(x){return x.pv==null?null:x.pv}),fr.map(function(x){return x.y.replace("20","'")}));
+  $("#bridge").innerHTML=bridge(r);
+  /* projections */
+  var R=r.rows, h='<thead><tr><th></th>'+R.map(function(x){return '<th class="n">'+x.y+'</th>'}).join("")+'</tr></thead><tbody>';
+  function line(lab,fn,bold){return '<tr><td class="small" style="white-space:nowrap'+(bold?";font-weight:600":";color:var(--muted)")+'">'+lab+'</td>'+R.map(function(x){var v=fn(x);return '<td class="n">'+(v==null?'<span class="dim">–</span>':v)+'</td>'}).join("")+'</tr>'}
+  h+=line("Revenue",function(x){return mn(x.rev)},true);
+  h+=line("Growth",function(x){return x.g==null?null:pct(x.g)});
+  h+=line("Adj. EBITDA",function(x){return mn(x.e)},true);
+  h+=line("Margin",function(x){return pct(x.m)});
+  h+=line("Unlevered FCF",function(x){return x.f==null?null:mn(x.f)},true);
+  h+=line("Discount factor",function(x){return x.df==null?null:x.df.toFixed(3)});
+  h+=line("PV of FCF",function(x){return x.pv==null?null:mn(x.pv)});
+  $("#proj").innerHTML=h+'</tbody>';
+  /* sensitivity */
+  var Ws=[-.01,-.005,0,.005,.01].map(function(d){return +(state.w+d).toFixed(4)}), Gs=[-.01,-.005,0,.005,.01].map(function(d){return +(state.tg+d).toFixed(4)});
+  var t='<thead><tr><th class="dim">WACC \\ g</th>'+Gs.map(function(g){return '<th class="mono">'+pct(g)+'</th>'}).join("")+'</tr></thead><tbody>';
+  Ws.forEach(function(w){
+    t+='<tr><th class="mono">'+pct(w,2)+'</th>';
+    Gs.forEach(function(g){
+      var v=dcf(Object.assign({},state,{w:w,tg:g})).ps, cur=(w===Ws[2]&&g===Gs[2]);
+      if(!(w>g)||!isFinite(v)){t+='<td class="dim">n/a</td>';return;}
+      var d=Math.max(-1,Math.min(1,(v/D.price-1)/0.35)), col=d>=0?"61,220,151":"255,107,129";
+      t+='<td class="'+(cur?"cur":"")+'" style="background:rgba('+col+','+(0.08+Math.abs(d)*0.45).toFixed(2)+')">'+v.toFixed(2)+'</td>';
+    });
+    t+='</tr>';
+  });
+  $("#sens").innerHTML=t+'</tbody>';
+}
+CTL.forEach(function(c){ $("#c_"+c.k).addEventListener("input",function(e){ state[c.k]=parseFloat(e.target.value); render(); }); });
+$$(".seg button").forEach(function(b){ b.addEventListener("click",function(){ state=Object.assign({},SCEN[b.dataset.s]); render(); }); });
+$("#reset").addEventListener("click",function(){ state=Object.assign({},SCEN.base); render(); });
+render();
+
+/* ---- Router (#/about, #/research, ...) ---- */
+var VIEWS=["about","research","model","experience","contact"];
+function route(){
+  var v=(location.hash.replace(/^#\/?/,"")||"about").split("/")[0];
+  if(VIEWS.indexOf(v)<0) v="about";
+  $$(".view").forEach(function(s){s.classList.toggle("on",s.id===v)});
+  $$("#nav a").forEach(function(a){var on=a.getAttribute("href")==="#/"+v;a.classList.toggle("on",on);if(on)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
+  window.scrollTo(0,0);
+  var t={about:"Fraise · Rema Boualdja",research:"Puig Research · Fraise",model:"Live DCF · Fraise",experience:"Experience · Fraise",contact:"Contact · Fraise"};
+  document.title=t[v];
+}
+window.addEventListener("hashchange",route); route();
+
+/* ---- misc ---- */
+$("#yr").textContent=new Date().getFullYear();
+if(LINKEDIN_URL){var li=$("#linkedin");li.href=LINKEDIN_URL;li.hidden=false;}
+})();
+</script>
+</body>
+</html>
